@@ -1,5 +1,5 @@
 -- create schema
-CREATE SCHEMA resort_db 
+CREATE SCHEMA resort_db; 
 
 -- create tabales 
 CREATE TABLE VillaType (
