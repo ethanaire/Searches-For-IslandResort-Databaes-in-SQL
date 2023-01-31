@@ -14,3 +14,9 @@ SELECT V.VillaName, V.VillaCostPerDay
 FROM VillaType VT, Villa V
 WHERE V.VillaID = VT.VillaID
 AND VT.VillaTypeName like '%two-bedroom%';
+
+-- Task 4: Print the ReservationID if the reservation was paid for within 5 days from the date of reservation. Please ensure no duplicate results are included.
+SELECT DISTINCT R.ReservationID
+FROM Reservation R, Payment P
+WHERE R.ReservationID = P.ReservationID 
+AND DATEDIFF(PaymentDate,ReservationDate) <= 5;
