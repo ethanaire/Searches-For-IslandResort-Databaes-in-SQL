@@ -49,9 +49,10 @@ and count(VR.VillaID) > 1
 GROUP BY R.ReservationID; 
 
 -- Task 9: Print the details of all villas which have never been booked.
-SELECT 
-FROM
-WHERE 
+SELECT V.VillaID, V.VillaName, V.VillaCostPerDay, V.VillaTypeID
+FROM Villa V 
+WHERE V.VilliaID not in ( SELECT VR.VillaID
+						  FROM Villa_Reservation VR );
 
 -- Task 10: Print the details of any payment that is more $1500. Only include the payments that have been made in either January of any year or in any months in the year of 2020 or the year of 2018. Sort the results by payment amount in descending order.
 SELECT 
