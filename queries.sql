@@ -76,32 +76,46 @@ and C.CustomerName in (
 					   );
 
 -- Task 12: Print the ReservationID and the total amount that it has costed (Cost of villa per night * number of days it has been reserved for). Only include reservations that exceed a total amount of $10,000.
-SELECT VR.ReservationID, sum(V.VillaCostPerDay * datediff(VR.DateTo,DateFrom)) 'Total Amount'
+SELECT VR.ReservationID, sum(V.VillaCostPerDay * datediff(VR.DateTo,VR.DateFrom)) 'Total Amount'
 FROM Villa_Reservation VR, Villa V
 WHERE VR.VillaID = V.VillaID
 GROUP BY R.ReservationID
-HAVING sum(V.VillaCostPerDay * datediff(VR.DateTo,DateFrom)) > 10.000;
+HAVING sum(V.VillaCostPerDay * datediff(VR.DateTo,VR.DateFrom)) > 10.000;
  
-
 -- Task 13: Print the names of the customers who have made bookings of outdoor activities those of which have a cost that is strictly less than the average cost of outdoor activities.
-SELECT 
-FROM
-WHERE 
+SELECT C.CustomerName
+FROM Customer C, Activity A, ActivityBooking AB, Reservation R 
+WHERE C.CustomerID = R.CustomerID 
+and A.ActivityID = AB.ActivityID
+and R.ReservationID = AB.ReservationID
+and A.ActivityType = 'O'
+and A.ActivityCost < (select AVG(A2.ActivityCost) from Activity A2);
 
 -- Task 14: Print the names of the customers and all the activities they have booked in the afternoon (after mid-day and before 4pm) along with the names of the guides. Only include guides who are Managers.
-SELECT 
-FROM
-WHERE 
+SELECT C.CustomerName, A.ActivityName 
+FROM Customer C, Activity A, ActivityBooking AB, Reservation R 
+WHERE C.CustomerID = R.CustomerID 
+and A.ActivityID = AB.ActivityID
+and R.ReservationID = AB.ReservationID
+and hour(AB.ActivityTime) between 12 and 16 
+and AB.GuideID in (select StaffID from Staff where ManagerID is null)
+GROUP BY C.CustomerName;
 
 -- Task 15: Print the names of Staff and their managers, only if the managers manage 2 staff or more
 SELECT 
-FROM
+FROM 
 WHERE 
 
--- Task 16: Print the details of activity booking and the names of staff involved in the activities.
-SELECT 
-FROM
-WHERE 
+-- Task 16: Print the details of activity booking and the names of staff (guide+support) involved in the activities.
+SELECT AB.ActivityID, AB.ReservationID, AB.ActivityTime, A.ActivityName, S.StaffName 'Guide Staff', ST.StaffName 'Support Staff'
+FROM Staff S, Staff ST, ActivityBooking AB, Activity A, SupportStaff SS 
+WHERE AB.GuideID = S.StaffID 
+and AB.ActivityID = A.ActivityID
+and ST.StaffID = SS.StaffID
+and SS.ActivityID = AB.ActivityID
+and SS.ReservationID = AB.ReservationID
+and SS.ActivityTime = AB.ActivityTime
+GROUP BY AB.ActivityID; 
 
 -- Task 17: List the details of package activities along with the details of its least expensive sub activities
 SELECT 
