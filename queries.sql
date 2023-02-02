@@ -76,9 +76,12 @@ and C.CustomerName in (
 					   );
 
 -- Task 12: Print the ReservationID and the total amount that it has costed (Cost of villa per night * number of days it has been reserved for). Only include reservations that exceed a total amount of $10,000.
-SELECT 
-FROM
-WHERE 
+SELECT VR.ReservationID, sum(V.VillaCostPerDay * datediff(VR.DateTo,DateFrom)) 'Total Amount'
+FROM Villa_Reservation VR, Villa V
+WHERE VR.VillaID = V.VillaID
+GROUP BY R.ReservationID
+HAVING sum(V.VillaCostPerDay * datediff(VR.DateTo,DateFrom)) > 10.000;
+ 
 
 -- Task 13: Print the names of the customers who have made bookings of outdoor activities those of which have a cost that is strictly less than the average cost of outdoor activities.
 SELECT 
