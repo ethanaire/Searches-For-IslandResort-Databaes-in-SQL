@@ -51,18 +51,29 @@ GROUP BY R.ReservationID;
 -- Task 9: Print the details of all villas which have never been booked.
 SELECT V.VillaID, V.VillaName, V.VillaCostPerDay, V.VillaTypeID
 FROM Villa V 
-WHERE V.VilliaID not in ( SELECT VR.VillaID
-						  FROM Villa_Reservation VR );
+WHERE V.VilliaID not in ( SELECT VR.VillaID FROM Villa_Reservation VR );
 
 -- Task 10: Print the details of any payment that is more $1500. Only include the payments that have been made in either January of any year or in any months in the year of 2020 or the year of 2018. Sort the results by payment amount in descending order.
-SELECT 
-FROM
-WHERE 
+SELECT PaymentID, PaymentDate
+FROM Payment
+WHERE PaymentAmount > 1500.00
+and (MONTH(PaymentDate) = 1 or YEAR(PaymentDate) in (2020,2018))
+ORDER BY PaymentAmout desc;
 
 -- Task 11: Print the details of any payment that has been made on a reservation of a one-bedroom villa by a customer whose surname begins with J.
-SELECT 
-FROM
-WHERE 
+SELECT P.PaymentID, P.PaymentDate
+FROM Payment P, Reservation R, Villa_Reservation VR, Villa V, VillaType VT, Customer C
+WHERE P.ReservationID = VR.ReservationID
+and R.ReservationID = VR.ReservationID
+and R.CustomerID = C.CustomerID
+and VR.VillaID = V.VillaID
+and V.VillaTypeID = VT.VillaTypeID
+and VT.VillaTypeName like '%one-bedroom%'
+and C.CustomerName in (
+						select CustomerName 
+                        from Customer 
+                        where trim(substr(reverse(CustomerName),1,locate('' ,reverse(CustomerName)))) like '%J'
+					   );
 
 -- Task 12: Print the ReservationID and the total amount that it has costed (Cost of villa per night * number of days it has been reserved for). Only include reservations that exceed a total amount of $10,000.
 SELECT 
