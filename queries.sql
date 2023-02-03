@@ -51,7 +51,8 @@ GROUP BY R.ReservationID;
 -- Task 9: Print the details of all villas which have never been booked.
 SELECT V.VillaID, V.VillaName, V.VillaCostPerDay, V.VillaTypeID
 FROM Villa V 
-WHERE V.VilliaID not in ( SELECT VR.VillaID FROM Villa_Reservation VR );
+WHERE V.VilliaID not in (SELECT VR.VillaID 
+                         FROM Villa_Reservation VR);
 
 -- Task 10: Print the details of any payment that is more $1500. Only include the payments that have been made in either January of any year or in any months in the year of 2020 or the year of 2018. Sort the results by payment amount in descending order.
 SELECT PaymentID, PaymentDate
@@ -69,10 +70,9 @@ and R.CustomerID = C.CustomerID
 and VR.VillaID = V.VillaID
 and V.VillaTypeID = VT.VillaTypeID
 and VT.VillaTypeName like '%one-bedroom%'
-and C.CustomerName in (
-						select CustomerName 
-                        from Customer 
-                        where trim(substr(reverse(CustomerName),1,locate('' ,reverse(CustomerName)))) like '%J'
+and C.CustomerName in (select CustomerName 
+					   from Customer 
+					   where trim(substr(reverse(CustomerName),1,locate('' ,reverse(CustomerName)))) like '%J'
 					   );
 
 -- Task 12: Print the ReservationID and the total amount that it has costed (Cost of villa per night * number of days it has been reserved for). Only include reservations that exceed a total amount of $10,000.
@@ -89,7 +89,9 @@ WHERE C.CustomerID = R.CustomerID
 and A.ActivityID = AB.ActivityID
 and R.ReservationID = AB.ReservationID
 and A.ActivityType = 'O'
-and A.ActivityCost < (select AVG(A2.ActivityCost) from Activity A2 where A2.ActivityType = 'O');
+and A.ActivityCost < (select AVG(A2.ActivityCost) 
+                      from Activity A2 
+                      where A2.ActivityType = 'O');
 
 -- Task 14: Print the names of the customers and all the activities they have booked in the afternoon (after mid-day and before 4pm) along with the names of the guides. Only include guides who are Managers.
 SELECT C.CustomerName, A.ActivityName 
@@ -98,7 +100,9 @@ WHERE C.CustomerID = R.CustomerID
 and A.ActivityID = AB.ActivityID
 and R.ReservationID = AB.ReservationID
 and hour(AB.ActivityTime) between 12 and 16 
-and AB.GuideID in (select StaffID from Staff where ManagerID is null)
+and AB.GuideID in (select StaffID 
+                   from Staff 
+                   where ManagerID is null)
 GROUP BY C.CustomerName;
 
 -- Task 15: Print the names of Staff and their managers, only if the managers manage 2 staff or more
@@ -124,8 +128,13 @@ and SS.ActivityTime = AB.ActivityTime
 GROUP BY AB.ActivityID; 
 
 -- Task 17: List the details of package activities along with the details of its least expensive sub activities
-SELECT 
-FROM 
-WHERE 
+SELECT P.PackageActivityID, AP.ActivityName, AP.ActivityCost, P.ChildActivityID 'Sub ID', S.ActivityName 'Sub Name', A.ActivityCost 'Sub Cost'
+FROM Activity AP, Activity S, Package P  
+WHERE AP.ActivityID = P.PackageActivityID
+and S.ActivityID = P.ChildActivityID
+and S.ActivityCost in (select min(A.ActivityCost) 
+                       from Activity A, Package P 
+                       where P.ChildActivityID = A.ActivityID 
+                       group by P.PackageActivityID)
+GROUP BY P.PackageActivityID;
 
--- Task 18: 
