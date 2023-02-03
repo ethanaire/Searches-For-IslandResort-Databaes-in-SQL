@@ -1,1 +1,1 @@
-# Searches-For-IslandResort-Databaes-in-SQL
+# Searches-For-IslandResort-Database-in-SQL
